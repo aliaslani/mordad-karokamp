@@ -1,0 +1,27 @@
+{% extends 'core/base.html' %}
+
+{% block title %}
+لیست پست‌ها
+{% endblock %}
+
+{% block style %}
+
+{% endblock %}
+
+{% block main %}
+
+<h1 title="This is a test title" class="text-success text-center">Hello World!</h1> <!--  This is a comment  -->
+<!-- {{ posts }} -->
+{% for post in posts %}
+<!-- <p>{{ post.title }}</p> -->
+{% if post.title == 'دانشگاه' %}
+
+<li>{{ post.title }}</li>
+{% else %}
+<p>{{ post.user }}</p>
+{% endif %}
+
+{% endfor %}
+
+
+{% endblock %}

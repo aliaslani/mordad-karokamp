@@ -1,0 +1,16 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}
+لیست کاربران
+{% endblock %}
+
+{% block style %}
+{% endblock %}
+
+{% block main %}
+
+<h1>لیست کاربران</h1>
+<img src="{% static 'images/flower.jpg' %}" alt="flower">
+{{ users }}
+
+{% endblock %}

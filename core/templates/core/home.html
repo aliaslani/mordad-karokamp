@@ -10,18 +10,20 @@
 
 {% block main %}
 
-<h1 title="This is a test title" class="text-success text-center">Hello World!</h1> <!--  This is a comment  -->
-<!-- {{ posts }} -->
-{% for post in posts %}
-<!-- <p>{{ post.title }}</p> -->
-{% if post.title == 'دانشگاه' %}
+<ul class="list-group mt-4">
+    {% for post in posts %}
 
-<li>{{ post.title }}</li>
-{% else %}
-<p>{{ post.user }}</p>
-{% endif %}
+    <li class="list-group-item bg-warning border border-1 border-dark d-flex justify-content-between">
+        <!-- <a class="link text-decoration-none" href="post/{{ post.id }}/"><span>{{ post.title }}</span></a> -->
+        <a class="link text-decoration-none" href="{% url 'post_detail' post.id %}"><span>{{ post.title }}</span></a>
+        <span>{{post.created_at }}</span>
+    </li>
+    {% endfor %}
+</ul>
 
-{% endfor %}
+
+
+
 
 
 {% endblock %}

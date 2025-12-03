@@ -4,22 +4,14 @@
 ایجاد پست جدید
 {% endblock %}
 
-{% block style %}
 
-{% endblock %}
 
 {% block main %}
 
 
-<form action="" method="post">
-    <label for="title">عنوان: </label>
-    <input type="text" name="title" id="title">
-    <label for="content">محتوا: </label>
-    <textarea name="content" id="content" rows="10" cols="40"></textarea>
-    <label for="user">کاربر: </label>
-    <input type="text" name="user" id="user">
-    <label for="category">موضوع: </label>
-    <input type="text" name="category" id="category">
+<form action="{% url 'new_post' %}" method="post">
+    {% csrf_token %}
+    {{ harchi.as_p }}
 
     <input type="submit" value="ایجاد">
 

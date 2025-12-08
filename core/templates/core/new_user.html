@@ -1,0 +1,21 @@
+{% extends 'core/base.html' %}
+
+{% block title %}
+ایجاد کاربر جدید
+{% endblock %}
+
+
+
+{% block main %}
+
+
+<form action="{% url 'new_user' %}" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <input type="submit" value="ایجاد">
+
+</form>
+
+
+{% endblock %}

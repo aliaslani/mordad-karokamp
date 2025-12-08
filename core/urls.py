@@ -1,5 +1,5 @@
 from django.urls import path
-from core.views import user_list, jadid, post_detail, new_post
+from core.views import user_list, jadid, post_detail, new_post, new_user
 
 
 urlpatterns = [
@@ -7,4 +7,5 @@ urlpatterns = [
     path("users/", user_list, name="users"),
     path("post/<int:post_id>/", post_detail, name="post_detail"),
     path("post/new/", new_post, name="new_post"),
+    path("user/new/", new_user, name="new_user"),
 ]

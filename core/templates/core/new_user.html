@@ -8,14 +8,18 @@
 
 {% block main %}
 
+<div class="row  d-flex justify-content-center ">
+    <div class="col-sm-6  m-3 p-4 border border-1 border-primary">
+        <form action="{% url 'new_user' %}" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
 
-<form action="{% url 'new_user' %}" method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
+            <input type="submit" value="ایجاد">
 
-    <input type="submit" value="ایجاد">
+        </form>
+    </div>
+</div>
 
-</form>
 
 
 {% endblock %}

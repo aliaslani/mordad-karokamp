@@ -1,10 +1,12 @@
-from django.shortcuts import redirect, render
+from email import message
+from django.shortcuts import redirect, render, get_object_or_404
 from core.models import Post, User
 from core.forms import PostForm, UserCreationForm
+from django.contrib import messages
 
 
 def jadid(request):
-    p = Post.objects.all()
+    p = Post.objects.filter(is_deleted=False)
     return render(request, "core/home.html", context={"posts": p})
 
 
@@ -36,13 +38,9 @@ def new_post(request):
     if request.method == "POST":
         form = PostForm(request.POST)
         if form.is_valid():
-            data = form.cleaned_data
-            username = data.pop("username")
-            user = User.objects.filter(username=username).first()
-            if user:
-                new_post = Post.objects.create(**data, user=user)
-                print(new_post.id)
-                return redirect("home")
+            form.save()
+            messages.success(request, "پست شما با موفقیت ثبت شد")
+            return redirect("home")
 
     return render(request, "core/new_post.html", {"harchi": form})
 
@@ -66,3 +64,11 @@ def new_user(request):
             return redirect("users")
 
     return render(request, "core/new_user.html", {"form": form})
+
+
+def delete_post(request, post_id):
+    post = get_object_or_404(Post, pk=post_id)
+    post.is_deleted = True
+    post.save()
+    messages.success(request, "پست مورد نظر با موفقیت پاک شد")
+    return redirect("home")

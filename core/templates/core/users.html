@@ -10,7 +10,13 @@
 {% block main %}
 
 <h1>لیست کاربران</h1>
-<img src="{% static 'images/flower.jpg' %}" alt="flower">
-{{ users }}
+{% for user in users %}
+{{ user }}
+<ul>
+    {% for friend in user.close_friend.all %}
+    <li>{{ friend }}</li>
+    {% endfor %}
+</ul>
+{% endfor %}
 
 {% endblock %}

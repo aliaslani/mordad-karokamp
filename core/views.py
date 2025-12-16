@@ -1,8 +1,11 @@
 from email import message
+from os import path
 from django.shortcuts import redirect, render, get_object_or_404
 from core.models import Post, User
-from core.forms import PostForm, UserCreationForm
+from core.forms import PostForm, UserCreationForm, EditPostForm
 from django.contrib import messages
+import shutil
+import pathlib
 
 
 def jadid(request):
@@ -36,7 +39,7 @@ def post_detail(request, post_id):
 def new_post(request):
     form = PostForm()
     if request.method == "POST":
-        form = PostForm(request.POST)
+        form = PostForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
             messages.success(request, "پست شما با موفقیت ثبت شد")
@@ -69,6 +72,26 @@ def new_user(request):
 def delete_post(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
     post.is_deleted = True
+
     post.save()
+    address = pathlib.Path(post.image.url)
+    shutil.rmtree(address)
     messages.success(request, "پست مورد نظر با موفقیت پاک شد")
     return redirect("home")
+
+
+def edit_post(request, post_id):
+    post = get_object_or_404(Post, pk=post_id)
+    form = EditPostForm(instance=post)
+
+    user = post.user
+    if request.method == "POST":
+        form = EditPostForm(request.POST, request.FILES, instance=post)
+        if form.is_valid():
+            form.save(commit=False)
+            post.user = user
+            post.save()
+
+            messages.success(request, "تغییرات با موفقیت اعمال شد")
+            return redirect("post_detail", post_id=post.id)
+    return render(request, "core/edit_post.html", {"form": form, "post": post})

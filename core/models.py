@@ -1,4 +1,5 @@
 from django.db import models
+from datetime import datetime
 
 
 class CityChoices(models.TextChoices):
@@ -56,6 +57,11 @@ class Post(models.Model):
     )
     is_deleted = models.BooleanField(default=False)
     category = models.CharField(max_length=20, choices=CategoryChoices)
+    image = models.ImageField(
+        upload_to=f"post_pictures/{datetime.now().strftime('%Y%m%d')}",
+        null=True,
+        blank=True,
+    )
 
     def __str__(self):
         return f"{self.title}"

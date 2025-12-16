@@ -11,15 +11,19 @@
 {% block main %}
 
 <div class="card" style="width: 18rem;">
+    <img src="{{ post.image.url }}" class="card-img-top" alt="">
     <div class="card-body">
         <h5 class="card-title">{{ post.title }} </h5>
         <p class="card-text">{{ post.content }} </p>
         <p class="card-text">{{ post.user }}</p>
         <p class="card-text">{{ post.created_at }}</p>
+        {% if post.created_at.date != post.updated_at.date %}
+        <p class="card-text">{{ post.updated_at }}</p>
+        {% endif %}
     </div>
     <div class="card-footer d-flex justify-content-between">
 
-        <a href="#" class="btn btn-warning">ویرایش</a>
+        <a href="{% url 'edit_post' post_id=post.id %}" class="btn btn-warning">ویرایش</a>
         <a href="{% url 'delete_post' post_id=post.id %}" class="btn btn-danger">حذف</a>
     </div>
 </div>

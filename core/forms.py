@@ -1,7 +1,7 @@
 from datetime import datetime
 from xml.dom import ValidationErr
 from django import forms
-from core.models import CityChoices
+from core.models import CityChoices, CategoryChoices
 from core.models import User, Post
 
 
@@ -42,7 +42,7 @@ class PostForm(forms.ModelForm):
         max_length=40, widget=forms.TextInput(attrs={"class": "form-control"})
     )
     title = forms.CharField(
-        widget=forms.TextInput(attrs={"class": "form-control"}),
+        widget=forms.TextInput(attrs={"class": "form-control", "autocomplete": "off"}),
         label="تست عنوان",
         help_text="اینجا باید عنوان پست را بنویسی",
     )
@@ -54,7 +54,16 @@ class PostForm(forms.ModelForm):
 
     class Meta:
         model = Post
-        fields = ["title", "content", "user", "visible", "show_to", "category", "tag"]
+        fields = [
+            "title",
+            "content",
+            "user",
+            "visible",
+            "image",
+            "show_to",
+            "category",
+            "tag",
+        ]
         widgets = {
             "content": forms.Textarea(attrs={"class": "form-control"}),
             "category": forms.Select(attrs={"class": "form-radio"}),
@@ -118,3 +127,19 @@ class UserCreationForm(forms.Form):
         if username in password:
             raise forms.ValidationError("نام کاربری نمی تواند بخشی از گذرواژه باشد")
         return data
+
+
+class EditPostForm(forms.ModelForm):
+    category = forms.ChoiceField(
+        choices=CategoryChoices.choices,
+        widget=forms.Select(attrs={"class": "form-control"}),
+    )
+    user = forms.ModelChoiceField(
+        queryset=User.objects.all(),
+        required=False,
+        widget=forms.Select(attrs={"class": "form-control", "disabled": "on"}),
+    )
+
+    class Meta:
+        model = Post
+        fields = ["content", "show_to", "visible", "image", "category", "user"]

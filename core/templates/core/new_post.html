@@ -9,7 +9,7 @@
 {% block main %}
 
 
-<form action="{% url 'new_post' %}" method="post">
+<form action="{% url 'new_post' %}" method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {{ harchi.as_p }}
 

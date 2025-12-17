@@ -1,8 +1,6 @@
-from datetime import datetime
-from xml.dom import ValidationErr
 from django import forms
-from core.models import CityChoices, CategoryChoices
-from core.models import User, Post
+from core.models import CategoryChoices
+from core.models import Post
 
 
 # class PostForm(forms.Form):
@@ -92,54 +90,56 @@ class PostForm(forms.ModelForm):
         return data
 
 
-class UserCreationForm(forms.Form):
-    username = forms.CharField(max_length=30, label="نام کاربری")
-    password = forms.CharField(
-        max_length=40,
-        label="گذرواژه",
-        widget=forms.PasswordInput(
-            attrs={"class": "form-control", "placeholder": "گذرواژه"},
-        ),
-    )
-    birthdate = forms.DateField(
-        widget=forms.DateInput(attrs={"type": "date", "class": "form-control"})
-    )
-    bio = forms.CharField(widget=forms.Textarea(attrs={"class": "form-control"}))
-    city = forms.ChoiceField(choices=CityChoices.choices, initial=CityChoices.ISFAHAN)
-    email = forms.EmailField()
-    close_friend = forms.ModelMultipleChoiceField(
-        queryset=User.objects.all(),
-        widget=forms.CheckboxSelectMultiple(attrs={"class": "form-check"}),
-    )
+# class UserCreationForm(forms.Form):
+#     username = forms.CharField(max_length=30, label="نام کاربری")
+#     password = forms.CharField(
+#         max_length=40,
+#         label="گذرواژه",
+#         widget=forms.PasswordInput(
+#             attrs={"class": "form-control", "placeholder": "گذرواژه"},
+#         ),
+#     )
+#     birthdate = forms.DateField(
+#         widget=forms.DateInput(attrs={"type": "date", "class": "form-control"})
+#     )
+#     bio = forms.CharField(widget=forms.Textarea(attrs={"class": "form-control"}))
+#     city = forms.ChoiceField(choices=CityChoices.choices, initial=CityChoices.ISFAHAN)
+#     email = forms.EmailField()
+#     close_friend = forms.ModelMultipleChoiceField(
+#         queryset=User.objects.all(),
+#         widget=forms.CheckboxSelectMultiple(attrs={"class": "form-check"}),
+#     )
 
-    def clean_birthdate(self):
-        bd = self.cleaned_data.get("birthdate")
-        if (datetime.now().date() - bd).days < 18 * 365:
-            # if bd > (datetime.now().date() - timedelta(years=18)):
-            raise forms.ValidationError("کاربر بچه سال قبول نمی کنیم")
+#     def clean_birthdate(self):
+#         bd = self.cleaned_data.get("birthdate")
+#         if (datetime.now().date() - bd).days < 18 * 365:
+#             # if bd > (datetime.now().date() - timedelta(years=18)):
+#             raise forms.ValidationError("کاربر بچه سال قبول نمی کنیم")
 
-        return bd
+#         return bd
 
-    def clean(self):
-        data = super().clean()
-        username = data.get("username")
-        password = data.get("password")
-        if username in password:
-            raise forms.ValidationError("نام کاربری نمی تواند بخشی از گذرواژه باشد")
-        return data
+#     def clean(self):
+#         data = super().clean()
+#         username = data.get("username")
+#         password = data.get("password")
+#         if username in password:
+#             raise forms.ValidationError("نام کاربری نمی تواند بخشی از گذرواژه باشد")
+#         return data
 
 
 class EditPostForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["user"].disabled = True
+
     category = forms.ChoiceField(
         choices=CategoryChoices.choices,
         widget=forms.Select(attrs={"class": "form-control"}),
-    )
-    user = forms.ModelChoiceField(
-        queryset=User.objects.all(),
-        required=False,
-        widget=forms.Select(attrs={"class": "form-control", "disabled": "on"}),
     )
 
     class Meta:
         model = Post
         fields = ["content", "show_to", "visible", "image", "category", "user"]
+
+    def clean_user(self):
+        return self.instance.user

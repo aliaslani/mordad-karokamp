@@ -1,3 +1,12 @@
+@font-face {
+    font-family: 'Vazir';
+    src: url(fonts/vazir.ttf);
+}
+
 textarea {
     resize: none;
+}
+
+label {
+    font-family: 'Vazirmatn';
 }

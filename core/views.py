@@ -1,11 +1,11 @@
 from email import message
-from os import path
 from django.shortcuts import redirect, render, get_object_or_404
-from core.models import Post, User
-from core.forms import PostForm, UserCreationForm, EditPostForm
+from core.models import Post
+from core.forms import PostForm, EditPostForm
 from django.contrib import messages
 import shutil
 import pathlib
+from accounts.models import User
 
 
 def jadid(request):
@@ -46,27 +46,6 @@ def new_post(request):
             return redirect("home")
 
     return render(request, "core/new_post.html", {"harchi": form})
-
-
-def new_user(request):
-    form = UserCreationForm()
-    if request.method == "POST":
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            data = form.cleaned_data
-            # username = data.get("username")
-            # password = data.get("password")
-            # birthdate = data.get("birthdate")
-            # bio = data.get("bio")
-            # city = data.get("city")
-            # email = data.get("email")
-            # close_friends = data.get("close_friend")
-            close_friends = data.pop("close_friend")
-            new_user = User.objects.create(**data)
-            new_user.close_friend.set(close_friends)
-            return redirect("users")
-
-    return render(request, "core/new_user.html", {"form": form})
 
 
 def delete_post(request, post_id):

@@ -1,10 +1,6 @@
 from django.db import models
 from datetime import datetime
-
-
-class CityChoices(models.TextChoices):
-    TEHRAN = ("tehran", "تهران")
-    ISFAHAN = ("isfahan", "اصهان")
+from accounts.models import User
 
 
 class ShowToChoices(models.TextChoices):
@@ -13,42 +9,40 @@ class ShowToChoices(models.TextChoices):
     ALL = ("all", "همه")
 
 
-class GenderChoices(models.TextChoices):
-    MALE = ("male", "مرد")
-    FEMALE = ("female", "زن")
-
-
 class CategoryChoices(models.TextChoices):
     SOCIAL = ("social", "اجتماعی")
     SPORT = ("sport", "ورزشی")
 
 
-class User(models.Model):
-    username = models.CharField(max_length=32, unique=True, verbose_name="نام کاربری")
-    password = models.CharField(max_length=20)
-    birthdate = models.DateField(null=True)
-    bio = models.TextField(null=True)
-    city = models.CharField(
-        max_length=20, choices=CityChoices.choices, default=CityChoices.ISFAHAN
-    )
-    email = models.EmailField("ایمیل")
-    close_friend = models.ManyToManyField(to="self", null=True, blank=True)
+# class Profile(models.Model):
+#     user = models.OneToOneField(
+#         to=User, on_delete=models.CASCADE, verbose_name="کاربر", related_name="profile"
+#     )
+#     birthdate = models.DateField(null=True)
+#     bio = models.TextField(null=True)
+#     city = models.CharField(
+#         max_length=20, choices=CityChoices.choices, default=CityChoices.ISFAHAN
+#     )
+#     close_friend = models.ManyToManyField(to="self", null=True, blank=True)
+#     gender = models.CharField(max_length=10, choices=GenderChoices)
+#     profile_picture = models.ImageField(
+#         upload_to="profile_pictures", default="profile_pictures/avatar.jpg"
+#     )
 
-    def __str__(self):
-        return f"{self.username}"
+#     def __str__(self):
+#         return f"{self.username}"
 
-    class Meta:
-        verbose_name = "کاربر"
-        verbose_name_plural = "کاربر"
-
-
-admin_user = User.objects.filter(username="admin").first()
+#     class Meta:
+#         verbose_name = "کاربر"
+#         verbose_name_plural = "کاربر"
 
 
 class Post(models.Model):
     title = models.CharField(max_length=50, verbose_name="عنوان")
     content = models.TextField()
-    user = models.ForeignKey(to=User, on_delete=models.SET_NULL, null=True, blank=True)
+    user = models.ForeignKey(
+        to=User, on_delete=models.SET_NULL, null=True, blank=True, related_name="posts"
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     visible = models.BooleanField(default=False)
@@ -62,6 +56,11 @@ class Post(models.Model):
         null=True,
         blank=True,
     )
+
+    def has_image(self):
+        if self.image.url:
+            return True
+        return False
 
     def __str__(self):
         return f"{self.title}"

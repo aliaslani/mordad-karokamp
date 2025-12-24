@@ -68,3 +68,18 @@ class Post(models.Model):
     class Meta:
         verbose_name = "پست"
         verbose_name_plural = "پست"
+
+
+class Like(models.Model):
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, verbose_name="کاربر", related_name="likes"
+    )
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, verbose_name="پست")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="تاریخ ایجاد")
+
+    class Meta:
+        verbose_name = "لایک"
+        verbose_name_plural = "لایک"
+
+    def __str__(self):
+        return f"{self.post}-{self.user}"

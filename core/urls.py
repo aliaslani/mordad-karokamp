@@ -7,6 +7,7 @@ from core.views import (
     new_post,
     edit_post,
     delete_post,
+    like,
 )
 
 
@@ -17,4 +18,5 @@ urlpatterns = [
     path("post/new/", new_post, name="new_post"),
     path("post/delete/<int:post_id>/", delete_post, name="delete_post"),
     path("post/edit/<int:post_id>/", edit_post, name="edit_post"),
+    path("post/like/<int:post_id>/", like, name="like"),
 ]

@@ -1,7 +1,9 @@
 from django.contrib import admin
-from core.models import Post
+from core.models import Post, Like
 from django.urls import reverse
 from django.utils.html import format_html
+
+admin.site.register(Like)
 
 
 @admin.register(Post)

@@ -36,9 +36,9 @@ from core.models import Post
 
 
 class PostForm(forms.ModelForm):
-    tag = forms.CharField(
-        max_length=40, widget=forms.TextInput(attrs={"class": "form-control"})
-    )
+    # tag = forms.CharField(
+    #     max_length=40, widget=forms.TextInput(attrs={"class": "form-control"})
+    # )
     title = forms.CharField(
         widget=forms.TextInput(attrs={"class": "form-control", "autocomplete": "off"}),
         label="تست عنوان",
@@ -55,12 +55,10 @@ class PostForm(forms.ModelForm):
         fields = [
             "title",
             "content",
-            "user",
             "visible",
             "image",
             "show_to",
             "category",
-            "tag",
         ]
         widgets = {
             "content": forms.Textarea(attrs={"class": "form-control"}),
@@ -81,13 +79,13 @@ class PostForm(forms.ModelForm):
             )
         return content
 
-    def clean(self):
-        data = super().clean()
-        title = data.get("title")
-        content = data.get("content")
-        if title not in content:
-            raise forms.ValidationError("حتما باید عنوان در محتوا هم باشد")
-        return data
+    # def clean(self):
+    #     data = super().clean()
+    #     title = data.get("title")
+    #     content = data.get("content")
+    #     if title not in content:
+    #         raise forms.ValidationError("حتما باید عنوان در محتوا هم باشد")
+    #     return data
 
 
 # class UserCreationForm(forms.Form):

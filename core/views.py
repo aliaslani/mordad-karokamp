@@ -1,11 +1,11 @@
-from email import message
 from django.shortcuts import redirect, render, get_object_or_404
-from core.models import Post
+from core.models import Post, Like
 from core.forms import PostForm, EditPostForm
 from django.contrib import messages
 import shutil
 import pathlib
 from accounts.models import User
+from django.contrib.auth.decorators import login_required
 
 
 def jadid(request):
@@ -36,29 +36,43 @@ def post_detail(request, post_id):
 #         else:
 #             print("User is not defined")
 #     return render(request, "core/new_post.html")
+
+
+@login_required
 def new_post(request):
+    # if request.user.is_authenticated:
     form = PostForm()
     if request.method == "POST":
         form = PostForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            new_post = form.save(commit=False)
+            new_post.user = request.user
+            new_post.save()
             messages.success(request, "پست شما با موفقیت ثبت شد")
             return redirect("home")
 
     return render(request, "core/new_post.html", {"harchi": form})
+    # else:
+    #     messages.error(request, "برای دیدن محتوای این صفحه باید ابتدا لاگین کنید")
+    #     return redirect("login")
 
 
+@login_required
 def delete_post(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
-    post.is_deleted = True
+    if post.user == request.user:
+        post.is_deleted = True
 
-    post.save()
-    address = pathlib.Path(post.image.url)
-    shutil.rmtree(address)
-    messages.success(request, "پست مورد نظر با موفقیت پاک شد")
-    return redirect("home")
+        post.save()
+        address = pathlib.Path(post.image.url)
+        shutil.rmtree(address)
+        messages.success(request, "پست مورد نظر با موفقیت پاک شد")
+        return redirect("home")
+    else:
+        return redirect("post_detail", post_id=post.id)
 
 
+@login_required
 def edit_post(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
     form = EditPostForm(instance=post)
@@ -74,3 +88,10 @@ def edit_post(request, post_id):
             messages.success(request, "تغییرات با موفقیت اعمال شد")
             return redirect("post_detail", post_id=post.id)
     return render(request, "core/edit_post.html", {"form": form, "post": post})
+
+
+def like(request, post_id):
+    if request.method == "POST":
+        post = get_object_or_404(Post, pk=post_id)
+        like = Like.objects.create(user=request.user, post=post)
+        return redirect("post_detail", post_id=post.id)

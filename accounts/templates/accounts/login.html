@@ -1,0 +1,17 @@
+{% extends 'core/base.html' %}
+{% block title %}
+
+ورود
+
+{% endblock %}
+
+
+{% block main %}
+
+<form action="{% url 'login' %}" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input class="btn btn-primary" type="submit" value="ورود " class="btn btn-primary">
+</form>
+
+{% endblock %}

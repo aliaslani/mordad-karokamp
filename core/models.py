@@ -58,7 +58,7 @@ class Post(models.Model):
     )
 
     def has_image(self):
-        if self.image.url:
+        if self.image and self.image.url:
             return True
         return False
 
